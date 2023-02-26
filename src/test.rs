@@ -1,4 +1,3 @@
-
 use crate::{ serial_print, serial_println };
 use crate::qemu::{QemuExitCode, exit_qemu};
 
@@ -16,7 +15,6 @@ impl<T> Testable for T where
   }
 }
 
-#[cfg(test)]
 pub fn test_runner(tests: &[&dyn Testable]) {
   serial_println!("Running {} tests", tests.len());
   for test in tests {

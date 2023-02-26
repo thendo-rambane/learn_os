@@ -2,16 +2,12 @@
 #![no_main]
 
 #![feature(custom_test_frameworks)]
-#![test_runner(crate::test::test_runner)]
+#![test_runner(learn_os::test::test_runner)]
 #![reexport_test_harness_main = "test_main"]
 
-mod serial;
-mod test;
-mod vga_buffer;
-mod qemu;
 
-use qemu::{QemuExitCode, exit_qemu};
 use core::panic::PanicInfo;
+use learn_os::println;
 
 #[no_mangle]
 pub extern "C" fn _start() -> ! {
@@ -23,10 +19,6 @@ pub extern "C" fn _start() -> ! {
   loop {}
 }
 
-#[test_case]
-fn trivial_assertion() {
-  assert_eq!(0, 1);
-}
 
 #[cfg(not(test))]
 #[panic_handler]
@@ -38,9 +30,6 @@ fn panic(info: &PanicInfo) -> ! {
 #[cfg(test)]
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
-  serial_println!("[ Failed ]\n");
-  serial_println!("Error: {}", info);
-  exit_qemu(QemuExitCode::Failed);
-  loop {}
+  learn_os::test_panic_handler(info)
 }
 
