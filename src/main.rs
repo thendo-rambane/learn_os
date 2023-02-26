@@ -2,10 +2,11 @@
 #![no_main]
 
 #![feature(custom_test_frameworks)]
-#![test_runner(crate::test_runner)]
+#![test_runner(crate::test::test_runner)]
 #![reexport_test_harness_main = "test_main"]
 
 mod serial;
+mod test;
 mod vga_buffer;
 mod qemu;
 
@@ -22,20 +23,9 @@ pub extern "C" fn _start() -> ! {
   loop {}
 }
 
-#[cfg(test)]
-fn test_runner(tests: &[&dyn Fn()]) {
-  serial_println!("Running {} tests", tests.len());
-  for test in tests {
-    test();
-  }
-  exit_qemu(QemuExitCode::Success);
-}
-
 #[test_case]
 fn trivial_assertion() {
-  serial_print!("trivial assertion... ");
   assert_eq!(0, 1);
-  serial_println!("[ok]");
 }
 
 #[cfg(not(test))]
